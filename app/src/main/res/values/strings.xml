@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Ipcam</string>
+
+    <string name="close">close</string>
+
+    <string name="error.stream">Cannot get stream</string>
+    <string name="error.verify">Cannot verify camera</string>
+    <string name="error.required">Required</string>
+    <string name="status.error">Status error</string>
+    <string name="status.ok">Status ok</string>
+
+    <string name="cam.name">Camera Name</string>
+    <string name="cam.host">Host</string>
+    <string name="cam.protocol">Protocol</string>
+    <string name="cam.type">Type</string>
+    <string name="cam.port">Port (default 80)</string>
+    <string name="cam.username">Username</string>
+    <string name="cam.password">Password</string>
+    <string name="prefix.http">http://</string>
+
+    <string name="dialog.confirm">Please confirm</string>
+    <string name="dialog.deletecam">This camera will be deleted</string>
+    <string name="dialog.cancelform">Camera registration is not finished. Cancel it ?</string>
+
+    <string name="edit">edit</string>
+
+    <string name="iv.gen">generic</string>
+    <string-array name="cams">
+        <item>Panasonic VL-CM210</item>
+        <item>Planex CS-WMV043G-NV</item>
+    </string-array>
+
+    <string-array name="protocols">
+        <item>http://</item>
+    </string-array>
+
+
+</resources>
