@@ -6,8 +6,8 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
+import butterknife.ButterKnife;
 import mobileyed.hanatoya.jp.MyApp;
 import mobileyed.hanatoya.jp.R;
 import mobileyed.hanatoya.jp.form.FormFragment;
@@ -15,7 +15,6 @@ import mobileyed.hanatoya.jp.form.FormPresenter;
 import mobileyed.hanatoya.jp.repo.DaoSession;
 import mobileyed.hanatoya.jp.stream.StreamFragment;
 import mobileyed.hanatoya.jp.stream.StreamPresenter;
-import mobileyed.hanatoya.jp.utils.BusProvider;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -24,11 +23,16 @@ public class MainActivity extends AppCompatActivity {
     private Subscription busSubscription;
     private static final String TAG = "tag";
 
+//    @BindView(R.id.toolbar) Toolbar toolbar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         final DaoSession daoSession =  ((MyApp)getApplication()).getDaoSession();
+//        setSupportActionBar(toolbar);
+//        toolbar.setTitle(R.string.app_name);
 
         this.busSubscription = MyApp.getInstance().getBus().toObserverable()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -72,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        
         int count = getFragmentManager().getBackStackEntryCount();
         if (count == 0) {
             super.onBackPressed();

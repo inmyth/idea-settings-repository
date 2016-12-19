@@ -43,7 +43,7 @@ class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final Cam cam = cams.get(position);
             h.name.setText(cam.getName());
             h.type.setText(cam.getType());
-            h.status.setText(cam.getStatus() == 0 ? context.getString(R.string.status_ok) : context.getString(R.string.status_error));
+//            h.status.setText(cam.getStatus() == 0 ? context.getString(R.string.status_ok) : context.getString(R.string.status_error));
             h.edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -67,7 +67,7 @@ class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     static class ViewHolderCam extends RecyclerView.ViewHolder {
         @BindView(R.id.name) TextView name;
         @BindView(R.id.type) TextView type;
-        @BindView(R.id.status) TextView status;
+//        @BindView(R.id.status) TextView status;
         @BindView(R.id.edit) TextView edit;
         @BindView(R.id.img) ImageView img;
 

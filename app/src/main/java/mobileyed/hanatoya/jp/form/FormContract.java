@@ -48,6 +48,8 @@ interface FormContract {
         void populate(Cam cam);
 
         void showDeleteConfirmDialog();
+
+        void showCancelConfirmDialog();
     }
 
 }

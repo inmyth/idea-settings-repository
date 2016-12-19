@@ -22,7 +22,6 @@ public class Events {
 
     public static class RequestBack{}
 
-    public static class BackPressed{} //used to broadcast back btn to fragment
     public static class CameraPing{
         public boolean isOk;
 

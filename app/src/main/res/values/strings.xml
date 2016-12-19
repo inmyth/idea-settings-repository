@@ -20,6 +20,7 @@
 
     <string name="dialog.confirm">Please confirm</string>
     <string name="dialog.deletecam">This camera will be deleted</string>
+    <string name="dialog.cancelform">Camera registration is not finished. Cancel it ?</string>
 
     <string name="edit">edit</string>
 

@@ -8,6 +8,7 @@ import mobileyed.hanatoya.jp.repo.DaoMaster;
 import mobileyed.hanatoya.jp.repo.DaoSession;
 import mobileyed.hanatoya.jp.utils.RxBus;
 
+
 public class MyApp extends Application {
 
     private DaoSession daoSession;
@@ -36,4 +37,5 @@ public class MyApp extends Application {
     public RxBus getBus() {
         return bus;
     }
+
 }

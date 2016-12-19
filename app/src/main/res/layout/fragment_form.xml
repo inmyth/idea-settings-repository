@@ -124,7 +124,7 @@
             android:contentDescription="@string/iv.gen"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            android:src="@android:drawable/ic_menu_save" />
+            android:src="@drawable/ic_check_circle_white_24dp" />
 
         <Space
             android:layout_width="56dp"
@@ -138,7 +138,7 @@
             android:contentDescription="@string/iv.gen"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            android:src="@android:drawable/ic_delete"
+            android:src="@drawable/ic_cancel_white_24dp"
             />
 
     </com.michaldrabik.tapbarmenulib.TapBarMenu>

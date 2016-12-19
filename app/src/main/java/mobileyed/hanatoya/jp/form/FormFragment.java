@@ -4,11 +4,9 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +20,6 @@ import android.widget.Spinner;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.michaldrabik.tapbarmenulib.TapBarMenu;
-import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,8 +29,6 @@ import mobileyed.hanatoya.jp.MyApp;
 import mobileyed.hanatoya.jp.R;
 import mobileyed.hanatoya.jp.main.Events;
 import mobileyed.hanatoya.jp.models.Cam;
-import mobileyed.hanatoya.jp.utils.BusProvider;
-import mobileyed.hanatoya.jp.utils.Debug;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -124,7 +119,7 @@ public class FormFragment extends Fragment implements FormContract.View {
                     }
                 });
         presenter.start();
-        Debug.setCam(edname, edhost, edport, edusername, edpassword);
+//        Debug.setCam(edname, edhost, edport, edusername, edpassword);
         return view;
     }
 
@@ -180,7 +175,7 @@ public class FormFragment extends Fragment implements FormContract.View {
         if (presenter.getCam().getId() != null){
             showDeleteConfirmDialog();
         }else{
-            presenter.close();
+            showCancelConfirmDialog();
         }
     }
 
@@ -232,6 +227,22 @@ public class FormFragment extends Fragment implements FormContract.View {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         presenter.delCam();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void showCancelConfirmDialog() {
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.dialog_confirm)
+                .content(R.string.dialog_cancelform)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        presenter.close();
                     }
                 })
                 .show();

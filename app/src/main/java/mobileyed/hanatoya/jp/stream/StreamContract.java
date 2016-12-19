@@ -1,5 +1,6 @@
 package mobileyed.hanatoya.jp.stream;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 
@@ -17,6 +18,15 @@ interface StreamContract {
 
         void close();
 
+        void up(Context context);
+
+        void left(Context context);
+
+        void right(Context context);
+
+        void down(Context context);
+
+        void center(Context context);
     }
 
     interface View extends BaseView<Presenter>{
@@ -26,5 +36,16 @@ interface StreamContract {
         void draw(MjpegInputStream mjpegInputStream);
 
         void showError();
+
+        void up();
+
+        void left();
+
+        void right();
+
+        void down();
+
+        void center();
+
     }
 }

@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import mobileyed.hanatoya.jp.R;
 import mobileyed.hanatoya.jp.models.Cam;
-import mobileyed.hanatoya.jp.utils.BusProvider;
 
 
 public class MainFragment extends Fragment implements MainContract.View {
@@ -52,7 +51,6 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BusProvider.getInstance().register(this);
         adapter = new MainAdapter(getActivity(), mainFragmentListener);
     }
 
@@ -65,12 +63,6 @@ public class MainFragment extends Fragment implements MainContract.View {
         list.setAdapter(adapter);
         presenter.start();
         return view;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        BusProvider.getInstance().unregister(this);
     }
 
     @Override

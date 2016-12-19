@@ -15,6 +15,7 @@ import com.github.niqdev.mjpeg.MjpegView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import mobileyed.hanatoya.jp.BasePresenter;
 import mobileyed.hanatoya.jp.MyApp;
 import mobileyed.hanatoya.jp.R;
@@ -32,7 +33,6 @@ public class StreamFragment extends Fragment implements StreamContract.View{
     @BindView(R.id.stream) MjpegView streamView;
 
     private StreamPresenter presenter;
-    private Subscription busSubscription;
 
     public static StreamFragment newInstance(long id) {
         Bundle args = new Bundle();
@@ -48,18 +48,6 @@ public class StreamFragment extends Fragment implements StreamContract.View{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stream, container, false);
         ButterKnife.bind(this, view);
-        this.busSubscription = MyApp.getInstance().getBus().toObserverable()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-
-                    @Override
-                    public void call(Object o) {
-                        if (o instanceof Events.BackPressed){
-                            streamView.stopPlayback();
-                        }
-
-                    }
-                });
         presenter.start();
         return view;
     }
@@ -68,9 +56,9 @@ public class StreamFragment extends Fragment implements StreamContract.View{
     
     @Override
     public void onPause() {
-        super.onPause();
         streamView.stopPlayback();
-        
+        super.onPause();
+
     }
 
     @Override
@@ -82,9 +70,6 @@ public class StreamFragment extends Fragment implements StreamContract.View{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (busSubscription != null && !busSubscription.isUnsubscribed()) {
-            busSubscription.unsubscribe();
-        }
     }
 
     @Override
@@ -115,5 +100,33 @@ public class StreamFragment extends Fragment implements StreamContract.View{
     @Override
     public void setPresenter(StreamContract.Presenter presenter) {
         this.presenter = (StreamPresenter)presenter;
+    }
+
+    @OnClick(R.id.up)
+    @Override
+    public void up() {
+        presenter.up(getActivity());
+    }
+
+    @OnClick(R.id.left)
+    @Override
+    public void left() {presenter.left(getActivity());}
+
+    @Override
+    @OnClick(R.id.right)
+    public void right() {
+    presenter.right(getActivity());
+    }
+
+    @Override
+    @OnClick(R.id.down)
+    public void down() {
+    presenter.down(getActivity());
+    }
+
+    @Override
+    @OnClick(R.id.center)
+    public void center() {
+    presenter.center(getActivity());
     }
 }

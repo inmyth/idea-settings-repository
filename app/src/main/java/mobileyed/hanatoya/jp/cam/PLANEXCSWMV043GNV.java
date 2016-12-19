@@ -4,10 +4,35 @@ package mobileyed.hanatoya.jp.cam;
  * Created by martin on 12/16/2016.
  */
 
-public class PLANEXCSWMV043GNV extends CamType {
+public class PLANEXCSWMV043GNV implements CamAPI {
 
     @Override
     public String getPath() {
-        return "nphMotionJpeg?Resolution=640x480&Quality=High";
+        return "/mjpg/video.mjpg";
+    }
+
+    @Override
+    public String up() {
+        return "/camera-cgi/com/ptz.cgi?move=up";
+    }
+
+    @Override
+    public String left() {
+        return "/camera-cgi/com/ptz.cgi?move=left";
+    }
+
+    @Override
+    public String right() {
+        return "/camera-cgi/com/ptz.cgi?move=right";
+    }
+
+    @Override
+    public String down() {
+        return "/camera-cgi/com/ptz.cgi?move=down";
+    }
+
+    @Override
+    public String center() {
+        return "/camera-cgi/com/ptz.cgi?move=home";
     }
 }

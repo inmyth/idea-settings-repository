@@ -1,9 +1,7 @@
 package mobileyed.hanatoya.jp.form;
 
-import android.database.SQLException;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.github.niqdev.mjpeg.Mjpeg;
 import com.github.niqdev.mjpeg.MjpegInputStream;
@@ -13,7 +11,6 @@ import mobileyed.hanatoya.jp.MyApp;
 import mobileyed.hanatoya.jp.main.Events;
 import mobileyed.hanatoya.jp.models.Cam;
 import mobileyed.hanatoya.jp.repo.CamDao;
-import mobileyed.hanatoya.jp.utils.BusProvider;
 import rx.functions.Action1;
 
 
@@ -43,15 +40,14 @@ public class FormPresenter implements FormContract.Presenter {
         view.showProgressBar(false);
         view.showBottomTab(true);
         if (bundle != null) {
-            long id = bundle.getLong(BasePresenter.KEY_ID, -1l);
-            if (id != -1l){
-                this.cam = camDao.queryBuilder()
-                        .where(CamDao.Properties.Id.eq(id))
-                        .list()
-                        .get(0);
-                view.populate(this.cam);
-                return;
-            }
+            long id = bundle.getLong(BasePresenter.KEY_ID);
+            this.cam = camDao.queryBuilder()
+                    .where(CamDao.Properties.Id.eq(id))
+                    .list()
+                    .get(0);
+            view.populate(this.cam);
+            return;
+
         }
         this.cam = new Cam();
         this.cam.setId(null);

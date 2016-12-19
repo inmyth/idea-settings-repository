@@ -16,35 +16,23 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:contentDescription="@string/iv.gen"
-            android:scaleType="centerInside"
-            />
+            android:scaleType="centerInside" />
 
         <TextView
             android:id="@+id/name"
-            style="@style/textRowCam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/textRowCam.title" />
 
         <TextView
             android:id="@+id/type"
-            style="@style/textRowCam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/textRowCam.subtitle" />
 
-        <TextView
-            android:id="@+id/status"
-            style="@style/textRowCam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/edit"
-            style="@style/textBtnCam"
-
-            />
+            style="@style/textRowCam.btn"
+            android:layout_gravity="right"
+            android:background="@drawable/btn_green_green_nob"
+            android:text="@string/edit" />
 
     </LinearLayout>
 
