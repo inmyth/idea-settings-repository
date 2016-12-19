@@ -30,7 +30,6 @@
         <TextView
             android:id="@+id/edit"
             style="@style/textRowCam.btn"
-            android:layout_gravity="right"
             android:background="@drawable/btn_green_green_nob"
             android:text="@string/edit" />
 

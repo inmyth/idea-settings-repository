@@ -1,15 +1,17 @@
 v.100
-1. Make delete button to delete cam
-2. "htttp" is not saved to db
-3. URL = protocol + host
-4. (bug) save creates a new cam
-5. Progress bar
-
-
-v.101
-- revert niqdev/ipcam-view to 0.3.4 (to fix stream crash post stopPlayback) https://github.com/niqdev/ipcam-view/issues/22
+- Make delete button to delete cam
+- "htttp" is not saved to db
+- URL = protocol + host
+- (bug) save creates a new cam
+- Progress bar
+- revert niqdev/ipcam-view to 0.3.4
 - added icons
 - better layouts
+
+>101
+- custom access endpoints
+- export / import user settings
+- need to add table custom
 
 TODOS:
 - img cap
