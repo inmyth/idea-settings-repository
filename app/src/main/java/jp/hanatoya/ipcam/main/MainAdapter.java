@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,17 +14,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.hanatoya.ipcam.R;
-import jp.hanatoya.ipcam.models.Cam;
+import jp.hanatoya.ipcam.models.CamExt;
 
 
 class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<Cam> cams = new ArrayList<>();
-    private Context context;
+    private ArrayList<CamExt> camExts = new ArrayList<>();
     private MainFragment.MainFragmentListener listener;
 
-    MainAdapter(Context context, MainFragment.MainFragmentListener listener) {
-        this.context = context;
+    MainAdapter(MainFragment.MainFragmentListener listener) {
         this.listener = listener;
     }
 
@@ -40,20 +37,20 @@ class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolderCam) {
             ViewHolderCam h = (ViewHolderCam) holder;
-            final Cam cam = cams.get(position);
-            h.name.setText(cam.getName());
-            h.type.setText(cam.getType());
-//            h.status.setText(cam.getStatus() == 0 ? context.getString(R.string.status_ok) : context.getString(R.string.status_error));
+            final CamExt camExt = camExts.get(position);
+            h.name.setText(camExt.getCam().getName());
+            h.type.setText(camExt.getCam().getType());
+//            h.status.setText(camExt.getStatus() == 0 ? context.getString(R.string.status_ok) : context.getString(R.string.status_error));
             h.edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onEditClick(cam.getId());
+                    listener.onEditClick(camExt.getCam().getId());
                 }
             });
             h.img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onStreamClick(cam.getId());
+                    listener.onStreamClick(camExt.getCam().getId());
                 }
             });
         }
@@ -61,7 +58,7 @@ class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return cams.size();
+        return camExts.size();
     }
 
     static class ViewHolderCam extends RecyclerView.ViewHolder {
@@ -78,9 +75,9 @@ class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    void swap(List<Cam> newCams) {
-        cams.clear();
-        cams.addAll(newCams);
+    void swap(List<CamExt> newCamExts) {
+        camExts.clear();
+        camExts.addAll(newCamExts);
         notifyDataSetChanged();
     }
 }

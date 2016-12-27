@@ -9,14 +9,15 @@ import com.github.niqdev.mjpeg.MjpegInputStream;
 import jp.hanatoya.ipcam.BasePresenter;
 import jp.hanatoya.ipcam.MyApp;
 import jp.hanatoya.ipcam.main.Events;
-import jp.hanatoya.ipcam.models.Cam;
+import jp.hanatoya.ipcam.models.CamExt;
+import jp.hanatoya.ipcam.repo.Cam;
 import jp.hanatoya.ipcam.repo.CamDao;
 import rx.functions.Action1;
 
 
 public class FormPresenter implements FormContract.Presenter {
     private static final int TIMEOUT = 5;
-    private Cam cam;
+    private CamExt camExt;
     private boolean isTesting;
     private boolean istestOk;
 
@@ -41,26 +42,25 @@ public class FormPresenter implements FormContract.Presenter {
         view.showBottomTab(true);
         if (bundle != null) {
             long id = bundle.getLong(BasePresenter.KEY_ID);
-            this.cam = camDao.queryBuilder()
+            this.camExt = new CamExt(camDao.queryBuilder()
                     .where(CamDao.Properties.Id.eq(id))
                     .list()
-                    .get(0);
-            view.populate(this.cam);
+                    .get(0));
+            view.populate(this.camExt);
             return;
 
         }
-        this.cam = new Cam();
-        this.cam.setId(null);
+        this.camExt = new CamExt(new Cam());
     }
 
     @Override
     public void testCam() {
         isTesting = true;
         istestOk = false;
-        cam.initAPI();
+        camExt.initAPI();
         Mjpeg.newInstance()
-                .credential(cam.getUsername(), cam.getPassword())
-                .open(cam.getStreamUrl(), TIMEOUT)
+                .credential(camExt.getCam().getUsername(), camExt.getCam().getPassword())
+                .open(camExt.getStreamUrl(), TIMEOUT)
                 .subscribe(new Action1<MjpegInputStream>() {
                                @Override
                                public void call(MjpegInputStream mjpegInputStream) {
@@ -81,7 +81,7 @@ public class FormPresenter implements FormContract.Presenter {
                 );
 //        queue.cancelAll(TAG_PING);
 //        Log.e("Volley", "start");
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, cam.getStreamUrl(),
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, camExt.getStreamUrl(),
 //                new Response.Listener<String>() {
 //
 //                    @Override
@@ -102,7 +102,7 @@ public class FormPresenter implements FormContract.Presenter {
 //            @Override
 //            public Map<String, String> getHeaders() throws AuthFailureError {
 //                HashMap<String, String> params = new HashMap<String, String>();
-//                String creds = String.format("%s:%s",cam.getUsername(),cam.getPassword());
+//                String creds = String.format("%s:%s",camExt.getUsername(),camExt.getPassword());
 //                String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.DEFAULT);
 //                params.put("Authorization", auth);
 //                return params;
@@ -116,16 +116,16 @@ public class FormPresenter implements FormContract.Presenter {
 
     @Override
     public void save() {
-        if(cam.getId() == null){
-            camDao.insert(cam);
+        if(camExt.getCam().getId() == null){
+            camDao.insert(camExt.getCam());
         }else{
-            camDao.insertOrReplace(cam);
+            camDao.insertOrReplace(camExt.getCam());
         }
     }
 
     @Override
     public void delCam() {
-        camDao.deleteByKey(cam.getId());
+        camDao.deleteByKey(camExt.getCam().getId());
         close();
     }
 
@@ -136,8 +136,8 @@ public class FormPresenter implements FormContract.Presenter {
         return isTesting;
     }
 
-    public Cam getCam() {
-        return cam;
+    public CamExt getCamExt() {
+        return camExt;
     }
 
     @Override

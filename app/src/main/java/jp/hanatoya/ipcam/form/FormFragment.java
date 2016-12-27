@@ -28,7 +28,7 @@ import jp.hanatoya.ipcam.BasePresenter;
 import jp.hanatoya.ipcam.MyApp;
 import jp.hanatoya.ipcam.R;
 import jp.hanatoya.ipcam.main.Events;
-import jp.hanatoya.ipcam.models.Cam;
+import jp.hanatoya.ipcam.models.CamExt;
 import jp.hanatoya.ipcam.utils.Debug;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -102,11 +102,11 @@ public class FormFragment extends Fragment implements FormContract.View {
                             Events.CameraPing event = (Events.CameraPing)o;
                             showProgressBar(false);
                             if (event.isOk) {
-                                presenter.getCam().setStatus(0);
+                                presenter.getCamExt().getCam().setStatus(0);
                                 presenter.save();
                                 MyApp.getInstance().getBus().send(new Events.RequestBack());
                             } else {
-                                presenter.getCam().setStatus(-1);
+                                presenter.getCamExt().getCam().setStatus(-1);
                                 Snackbar.make(coordinatorLayout, R.string.error_verify, Snackbar.LENGTH_INDEFINITE)
                                         .setAction(android.R.string.ok, new View.OnClickListener() {
                                             @Override
@@ -120,7 +120,7 @@ public class FormFragment extends Fragment implements FormContract.View {
                     }
                 });
         presenter.start();
-        Debug.setCam(edname, edhost, edport, edusername, edpassword);
+//        Debug.setCam(edname, edhost, edport, edusername, edpassword);
         return view;
     }
 
@@ -145,26 +145,27 @@ public class FormFragment extends Fragment implements FormContract.View {
             return;
         }
 
-        presenter.getCam().setName(name);
+        presenter.getCamExt().getCam().setName(name);
+        presenter.getCamExt().getCam().setProtocol(getString(R.string.prefix_http));
         String host = getString(edhost);
         if (host.contentEquals(getString(R.string.prefix_http))) {
             setError(tilHost);
             return;
         }
-        presenter.getCam().setHost(host);
+        presenter.getCamExt().getCam().setHost(host);
         String portString = getString(edport);
         if (portString != null) {
             int port = Integer.parseInt(portString);
-            presenter.getCam().setPort(port);
+            presenter.getCamExt().getCam().setPort(port);
         }
 
         String username = getString(edusername);
         String password = getString(edpassword);
         String model = getModelFromSpinner(spmodel);
 
-        presenter.getCam().setUsername(username);
-        presenter.getCam().setPassword(password);
-        presenter.getCam().setType(model);
+        presenter.getCamExt().getCam().setUsername(username);
+        presenter.getCamExt().getCam().setPassword(password);
+        presenter.getCamExt().getCam().setType(model);
 
         showProgressBar(true);
         showBottomTab(false);
@@ -173,7 +174,7 @@ public class FormFragment extends Fragment implements FormContract.View {
 
     @OnClick(R.id.delete)
     public void delete(){
-        if (presenter.getCam().getId() != null){
+        if (presenter.getCamExt().getCam().getId() != null){
             showDeleteConfirmDialog();
         }else{
             showCancelConfirmDialog();
@@ -197,15 +198,15 @@ public class FormFragment extends Fragment implements FormContract.View {
 
 
     @Override
-    public void populate(Cam cam) {
-        edname.setText(cam.getName());
-        edhost.setText(cam.getHost());
-        edport.setText(String.valueOf(cam.getPort()));
-        if (cam.getUsername() != null){
-            edusername.setText(cam.getUsername());
+    public void populate(CamExt camExt) {
+        edname.setText(camExt.getCam().getName());
+        edhost.setText(camExt.getCam().getHost());
+        edport.setText(String.valueOf(camExt.getCam().getPort()));
+        if (camExt.getCam().getUsername() != null){
+            edusername.setText(camExt.getCam().getUsername());
         }
-        if (cam.getPassword() != null){
-            edpassword.setText(cam.getPassword());
+        if (camExt.getCam().getPassword() != null){
+            edpassword.setText(camExt.getCam().getPassword());
         }
     }
 

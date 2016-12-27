@@ -7,7 +7,7 @@ import android.widget.Spinner;
 
 import jp.hanatoya.ipcam.BasePresenter;
 import jp.hanatoya.ipcam.BaseView;
-import jp.hanatoya.ipcam.models.Cam;
+import jp.hanatoya.ipcam.models.CamExt;
 
 
 interface FormContract {
@@ -17,7 +17,7 @@ interface FormContract {
 
         void testCam();
 
-        Cam getCam();
+        CamExt getCamExt();
 
         boolean isTesting();
 
@@ -45,7 +45,7 @@ interface FormContract {
 
         Bundle getBundle();
 
-        void populate(Cam cam);
+        void populate(CamExt camExt);
 
         void showDeleteConfirmDialog();
 

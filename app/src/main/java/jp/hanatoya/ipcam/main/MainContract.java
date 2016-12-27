@@ -4,7 +4,7 @@ import java.util.List;
 
 import jp.hanatoya.ipcam.BasePresenter;
 import jp.hanatoya.ipcam.BaseView;
-import jp.hanatoya.ipcam.models.Cam;
+import jp.hanatoya.ipcam.models.CamExt;
 
 
 public interface MainContract {
@@ -15,15 +15,24 @@ public interface MainContract {
         void toEdit(long id);
 
         void toStream(long id);
+
+        void addNewCam();
+
+        void exportUserSettings();
+
+        void importUserSettings();
     }
 
 
     public interface View extends BaseView<Presenter>{
 
-        void populate(List<Cam> newCamList);
+        void populate(List<CamExt> newCamExtList);
 
         void addClick();
 
+        void toastDbDumped();
+
+        void toastPostImport(boolean isSuccess);
 
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -14,14 +15,20 @@ import com.android.volley.toolbox.StringRequest;
 import com.github.niqdev.mjpeg.Mjpeg;
 import com.github.niqdev.mjpeg.MjpegInputStream;
 
+import org.greenrobot.greendao.query.Query;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import jp.hanatoya.ipcam.BasePresenter;
 import jp.hanatoya.ipcam.MyApp;
+import jp.hanatoya.ipcam.R;
 import jp.hanatoya.ipcam.main.Events;
-import jp.hanatoya.ipcam.models.Cam;
+import jp.hanatoya.ipcam.main.MainActivity;
+import jp.hanatoya.ipcam.models.CamExt;
 import jp.hanatoya.ipcam.repo.CamDao;
+import jp.hanatoya.ipcam.repo.Switch;
+import jp.hanatoya.ipcam.repo.SwitchDao;
 import jp.hanatoya.ipcam.utils.VolleySingleton;
 import rx.functions.Action1;
 
@@ -35,14 +42,17 @@ public class StreamPresenter implements StreamContract.Presenter{
     private static final int TIMEOUT = 5;
 
     private CamDao camDao;
+    private SwitchDao switchDao;
     private StreamContract.View view;
-    private Cam cam;
+    private CamExt camExt;
     private boolean isError;
 
-    public StreamPresenter( @NonNull StreamContract.View view, @NonNull CamDao camDao){
+    public StreamPresenter(@NonNull StreamContract.View view, @NonNull CamDao camDao, @NonNull SwitchDao switchDao){
         this.camDao = camDao;
         view.setPresenter(this);
         this.view = view;
+        this.switchDao = switchDao;
+
 
     }
 
@@ -50,7 +60,10 @@ public class StreamPresenter implements StreamContract.Presenter{
     public void start() {
         Bundle bundle = view.getBundle();
         long id = bundle.getLong(BasePresenter.KEY_ID);
-        this.cam  = camDao.load(id);
+        this.camExt = new CamExt(camDao.load(id));
+        this.camExt.initAPI();
+        Query query = switchDao.queryBuilder().where(SwitchDao.Properties.CamId.eq(camExt.getCam().getId())).orderAsc(SwitchDao.Properties.Id).build();
+        this.camExt.getCam().setSwitches(query.list());
         loadIpCam();
     }
 
@@ -65,8 +78,8 @@ public class StreamPresenter implements StreamContract.Presenter{
             return;
         }
         Mjpeg.newInstance()
-                .credential(cam.getUsername(), cam.getPassword())
-                .open(cam.getStreamUrl(), TIMEOUT)
+                .credential(camExt.getCam().getUsername(), camExt.getCam().getPassword())
+                .open(camExt.getStreamUrl(), TIMEOUT)
                 .subscribe(new Action1<MjpegInputStream>() {
                                @Override
                                public void call(MjpegInputStream mjpegInputStream) {
@@ -89,31 +102,47 @@ public class StreamPresenter implements StreamContract.Presenter{
 
     @Override
     public void up(Context context) {
-        VolleySingleton.getInstance(context).addToRequestQueue(setUpReq(cam.getUpUrl(), cam.getUsername(), cam.getPassword()));
+        VolleySingleton.getInstance(context).addToRequestQueue(setupReq(camExt.getUpUrl(), camExt.getCam().getUsername(), camExt.getCam().getPassword()));
     }
 
     @Override
     public void left(Context context) {
-        VolleySingleton.getInstance(context).addToRequestQueue(setUpReq(cam.getLeftUrl(), cam.getUsername(), cam.getPassword()));
+        VolleySingleton.getInstance(context).addToRequestQueue(setupReq(camExt.getLeftUrl(), camExt.getCam().getUsername(), camExt.getCam().getPassword()));
     }
 
     @Override
     public void right(Context context) {
-        VolleySingleton.getInstance(context).addToRequestQueue(setUpReq(cam.getRightUrl(), cam.getUsername(), cam.getPassword()));
+        VolleySingleton.getInstance(context).addToRequestQueue(setupReq(camExt.getRightUrl(), camExt.getCam().getUsername(), camExt.getCam().getPassword()));
     }
 
     @Override
     public void down(Context context) {
-        VolleySingleton.getInstance(context).addToRequestQueue(setUpReq(cam.getDownUrl(), cam.getUsername(), cam.getPassword()));
+        VolleySingleton.getInstance(context).addToRequestQueue(setupReq(camExt.getDownUrl(), camExt.getCam().getUsername(), camExt.getCam().getPassword()));
     }
 
     @Override
     public void center(Context context) {
-        VolleySingleton.getInstance(context).addToRequestQueue(setUpReq(cam.getCenterUrl(), cam.getUsername(), cam.getPassword()));
+        VolleySingleton.getInstance(context).addToRequestQueue(setupReq(camExt.getCenterUrl(), camExt.getCam().getUsername(), camExt.getCam().getPassword()));
+    }
+
+    @Override
+    public void cgi(Context context, Switch s) {
+        VolleySingleton.getInstance(context).addToRequestQueue(setupReq(camExt.buildCgiUrl(s), camExt.getCam().getUsername(), camExt.getCam().getPassword()));
+        Toast.makeText(context, context.getString(R.string.dialog_cgiclicked, s.getName()), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void openCgiDialogOrToast() {
+        if (camExt.getCam().getSwitches() == null){
+            view.toastNoCgi();
+        }else{
+            MyApp.getInstance().getBus().send(new Events.OpenCgiDialog(camExt));
+        }
     }
 
 
-    private StringRequest setUpReq(String url, final String username, final String password){
+
+    private StringRequest setupReq(String url, final String username, final String password){
         return new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

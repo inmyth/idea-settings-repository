@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "jp.hanatoya.ipcam"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -48,8 +48,11 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
     compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     compile 'io.reactivex:rxandroid:0.24.0'
-    compile 'de.greenrobot:greendao:2.1.0'
+    compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.github.michaldrabik:tapbarmenu:1.0.5'
     compile 'com.afollestad.material-dialogs:commons:0.9.1.0'
     compile 'com.android.volley:volley:1.0.0'
+    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
+    compile 'com.sromku:simple-storage:1.2.0'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
 }

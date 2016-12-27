@@ -7,8 +7,11 @@ import android.support.design.widget.CoordinatorLayout;
 import com.github.niqdev.mjpeg.MjpegInputStream;
 import com.github.niqdev.mjpeg.MjpegView;
 
+import java.util.ArrayList;
+
 import jp.hanatoya.ipcam.BasePresenter;
 import jp.hanatoya.ipcam.BaseView;
+import jp.hanatoya.ipcam.repo.Switch;
 
 interface StreamContract {
 
@@ -27,6 +30,11 @@ interface StreamContract {
         void down(Context context);
 
         void center(Context context);
+
+        void cgi(Context context, Switch s);
+
+        void openCgiDialogOrToast();
+
     }
 
     interface View extends BaseView<Presenter>{
@@ -46,6 +54,10 @@ interface StreamContract {
         void down();
 
         void center();
+
+        void openCgiDialog();
+
+        void toastNoCgi();
 
     }
 }

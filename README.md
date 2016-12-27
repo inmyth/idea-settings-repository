@@ -1,17 +1,19 @@
 v.100
-- Make delete button to delete cam
+- Make delete button to delete camExt
 - "htttp" is not saved to db
 - URL = protocol + host
-- (bug) save creates a new cam
+- (bug) save creates a new camExt
 - Progress bar
 - revert niqdev/ipcam-view to 0.3.4
 - added icons
 - better layouts
 
->101
+v.101
+
 - custom access endpoints
 - export / import user settings
-- need to add table custom
+- added table custom
+
 
 TODOS:
 - img cap

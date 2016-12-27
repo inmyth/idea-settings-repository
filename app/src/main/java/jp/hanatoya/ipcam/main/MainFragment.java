@@ -4,11 +4,17 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -16,13 +22,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.hanatoya.ipcam.R;
-import jp.hanatoya.ipcam.models.Cam;
+import jp.hanatoya.ipcam.models.CamExt;
 
 
 public class MainFragment extends Fragment implements MainContract.View {
 
     @BindView(android.R.id.list) RecyclerView list;
     @BindView(R.id.add) FloatingActionButton add;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     private MainPresenter presenter;
     private MainAdapter adapter;
@@ -51,7 +58,8 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new MainAdapter(getActivity(), mainFragmentListener);
+        setHasOptionsMenu(true);
+        adapter = new MainAdapter(mainFragmentListener);
     }
 
     @Nullable
@@ -61,8 +69,30 @@ public class MainFragment extends Fragment implements MainContract.View {
         ButterKnife.bind(this, view);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         presenter.start();
+
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_fragment_main, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.download:
+                presenter.exportUserSettings();
+                break;
+            case R.id.upload:
+                presenter.importUserSettings();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -70,16 +100,26 @@ public class MainFragment extends Fragment implements MainContract.View {
         this.presenter = (MainPresenter)presenter;
     }
 
+    @Override
+    public void toastPostImport(boolean isSuccess) {
+        int r = isSuccess ? R.string.dialog_uploadsuccess : R.string.dialog_uploaderror;
+        Toast.makeText(getActivity(), r, Toast.LENGTH_LONG).show();
+    }
 
     @Override
-    public void populate(List<Cam> newCamList){
-        adapter.swap(newCamList);
+    public void toastDbDumped() {
+        Toast.makeText(getActivity(), R.string.dialog_dbdumped, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void populate(List<CamExt> newCamExtList){
+        adapter.swap(newCamExtList);
     }
 
     @OnClick(R.id.add)
     @Override
     public void addClick() {
-        presenter.toEdit(-1L);
+        presenter.addNewCam();
     }
 
 

@@ -1,18 +1,32 @@
 package jp.hanatoya.ipcam.main;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v13.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import butterknife.ButterKnife;
 import jp.hanatoya.ipcam.MyApp;
 import jp.hanatoya.ipcam.R;
+import jp.hanatoya.ipcam.edit.EditActivity;
 import jp.hanatoya.ipcam.form.FormFragment;
 import jp.hanatoya.ipcam.form.FormPresenter;
 import jp.hanatoya.ipcam.repo.DaoSession;
+import jp.hanatoya.ipcam.repo.Switch;
+import jp.hanatoya.ipcam.stream.CgiDialogFragment;
 import jp.hanatoya.ipcam.stream.StreamFragment;
 import jp.hanatoya.ipcam.stream.StreamPresenter;
 import rx.Subscription;
@@ -43,27 +57,60 @@ public class MainActivity extends AppCompatActivity {
                             public void call(Object o) {
                                 if (o instanceof Events.SwitchToEdit){
                                     Events.SwitchToEdit event = (Events.SwitchToEdit)o;
-                                    FormFragment formFragment = event.id == -1L ? FormFragment.newInstance() : FormFragment.newInstance(event.id);
+                                    EditActivity.navigate( MainActivity.this, event.id);
+                                }else if (o instanceof Events.AddNewCam){
+                                    FormFragment formFragment = FormFragment.newInstance();
                                     new FormPresenter(formFragment, daoSession.getCamDao());
                                     replaceFragment(formFragment);
-                                }else if (o instanceof Events.RequestBack){
+                                } else if (o instanceof Events.RequestBack){
                                     onBackPressed();
                                 }else if (o instanceof Events.SwitchToStream){
                                     Events.SwitchToStream event = (Events.SwitchToStream)o;
                                     StreamFragment streamFragment = StreamFragment.newInstance(event.id);
-                                    new StreamPresenter(streamFragment, daoSession.getCamDao());
+                                    new StreamPresenter(streamFragment, daoSession.getCamDao(), daoSession.getSwitchDao());
                                     replaceFragment(streamFragment);
+                                }else if (o instanceof  Events.OpenCgiDialog){
+                                    Events.OpenCgiDialog event = (Events.OpenCgiDialog) o;
+                                    final CgiDialogFragment cgiDialogFragment = CgiDialogFragment.newInstance(event.camExt, new CgiDialogFragment.Listener() {
+                                        @Override
+                                        public void cgiClick(Switch s) {
+                                            MyApp.getInstance().getBus().send(new Events.CgiClicked(s));
+                                        }
+                                    });
+                                    cgiDialogFragment.show(getSupportFragmentManager(), "fragment_stream_cgi");
+                                }else  if (o instanceof Events.RequestFileImportInstructionDialog){
+                                    new MaterialDialog.Builder(MainActivity.this)
+                                            .title(R.string.dialog_howtoupload)
+                                            .content(getString(R.string.dialog_uploadinstruction))
+                                            .positiveText(android.R.string.ok)
+                                            .build()
+                                            .show();
                                 }
                             }
                         }
                 );
         MainFragment mainFragment = MainFragment.newInstance();
-        new MainPresenter(mainFragment, daoSession.getCamDao());
+        new MainPresenter(mainFragment, daoSession.getCamDao(), daoSession.getSwitchDao());
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.container, mainFragment);
         ft.commit();
+        isStoragePermissionGranted();
+    }
+
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            return true;
+        }
     }
 
     @Override
