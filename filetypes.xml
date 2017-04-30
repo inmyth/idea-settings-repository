@@ -3,6 +3,7 @@
     <extensionMap>
       <mapping ext="me" type="PLAIN_TEXT" />
       <mapping ext="md" type="PLAIN_TEXT" />
+      <mapping ext="traineddata" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
 </application>
