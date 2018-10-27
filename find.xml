@@ -1,7 +1,7 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File 'M:\android\projects\Martiply\app\src\main\java\com\martiply\android\activities\map\Singular.java'" />
-    <option name="defaultScopeName" value="File 'M:\android\projects\Martiply\app\src\main\java\com\martiply\android\activities\map\Singular.java'" />
-    <option name="SEARCH_SCOPE" value="File 'M:\android\projects\Martiply\app\src\main\java\com\martiply\android\activities\map\Singular.java'" />
+    <option name="customScope" value="All Places" />
+    <option name="defaultScopeName" value="All Places" />
+    <option name="SEARCH_SCOPE" value="All Places" />
   </component>
 </application>
